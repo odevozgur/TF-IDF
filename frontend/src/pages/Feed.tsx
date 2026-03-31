@@ -88,9 +88,9 @@ export default function Feed() {
   };
 
   return (
-    <div className="feed-layout flex flex-col items-center justify-center w-full max-w-4xl mx-auto">
+    <div className="feed-layout flex flex-col items-center w-full max-w-4xl mx-auto">
       {/* Main Feed Content */}
-      <section className="feed-main glass-panel h-fit w-full max-w-2xl p-4 sm:p-6 rounded-[28px] sm:rounded-[36px]">
+      <section className="feed-main glass-panel h-fit w-full max-w-2xl p-4 sm:p-6 rounded-[28px] sm:rounded-[36px] mb-8">
         <div className="feed-switch premium-surface flex mb-6 p-1.5 rounded-[18px] w-fit overflow-x-auto no-scrollbar">
           <button 
             onClick={() => setActiveTab('global')}

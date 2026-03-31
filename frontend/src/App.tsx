@@ -31,7 +31,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function AppContent() {
   const { user } = useAuth();
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
+  // Sayfa değiştiğinde menüyü kapat
+  React.useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen text-white relative bg-[#06080d]">
@@ -40,11 +46,28 @@ function AppContent() {
       <div className="bg-orb orb-2"></div>
       <div className="bg-grid"></div>
 
+      {/* Mobile Menu Backdrop */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMenuOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       <div className={!isAuthPage && user ? "app-shell relative z-10 lg:grid lg:grid-cols-[280px_1fr] h-full" : "relative z-10 h-full"}>
-        {!isAuthPage && user && <Sidebar />}
+        {!isAuthPage && user && (
+          <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        )}
         
         <main className={!isAuthPage && user ? "main min-w-0 p-4 sm:p-6 lg:p-8 lg:pt-5 pb-32 lg:pb-10 overflow-x-hidden" : ""}>
-          {!isAuthPage && user && <Topbar />}
+          {!isAuthPage && user && (
+            <Topbar onMenuToggle={() => setIsMenuOpen(!isMenuOpen)} />
+          )}
           
           <div className={!isAuthPage && user ? "max-w-7xl mx-auto w-full" : ""}>
             <AnimatePresence mode="wait">

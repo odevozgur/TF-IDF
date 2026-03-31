@@ -1,53 +1,53 @@
+import { Search, Bell, Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { Search, Moon } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
 
-export default function Topbar() {
+interface TopbarProps {
+  onMenuToggle?: () => void;
+}
+
+export default function Topbar({ onMenuToggle }: TopbarProps) {
   const { user } = useAuth();
-  const location = useLocation();
-
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case '/': return 'Ana Sayfa';
-      case '/profile': return 'Profil';
-      default: return 'Sentiment';
-    }
-  };
 
   if (!user) return null;
 
   return (
-    <header className="topbar glass-panel flex justify-between items-center px-4 sm:px-5 py-3.5 sm:py-4.5 rounded-[20px] sm:rounded-[24px] sticky top-[10px] sm:top-[18px] z-[55] mb-6">
+    <header className="topbar flex items-center justify-between mb-8 lg:mb-10 lg:pt-2">
       <div className="flex items-center gap-4">
-        {/* Mobile Brand Badge */}
-        <div className="brand-badge lg:hidden w-10 h-10 flex items-center justify-center font-extrabold text-white text-lg rounded-[16px] bg-gradient-to-br from-[#4ea1ff] to-[#ff6fb3] shadow-[0_8px_25px_rgba(143,114,255,0.3)] shrink-0">
-          S
-        </div>
-        <h2 className="m-0 font-display text-[24px] sm:text-[34px] tracking-[-0.06em] text-white truncate max-w-[150px] sm:max-w-none">
-          {getPageTitle()}
-        </h2>
-      </div>
+        {/* Mobile Hamburger Toggle */}
+        <button 
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-[14px] bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all active:scale-95"
+        >
+          <Menu size={24} />
+        </button>
 
-      <div className="topbar-right flex items-center gap-2 sm:gap-3">
-        <div className="search-box hidden md:flex items-center gap-2.5 px-3.5 min-w-[200px] lg:min-w-[260px] rounded-[16px] border border-white/10 bg-gradient-to-b from-white/10 to-white/5">
-          <Search size={18} className="text-slate-400" />
+        <div className="search-wrapper relative hidden sm:block">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
           <input 
             type="text" 
             placeholder="Ara..." 
-            className="bg-transparent border-none outline-none text-white w-full py-2.5 sm:py-3 text-[14px]"
+            className="search-input py-3 pl-12 pr-6 bg-white/[0.04] border border-[#ffffff14] rounded-[18px] text-[14px] font-medium text-white focus:bg-white/[0.08] focus:border-indigo-500/50 outline-none transition-all w-[240px] lg:w-[320px]"
           />
         </div>
         
-        <button className="icon-btn tactile w-[40px] h-[40px] sm:w-[46px] sm:h-[46px] grid place-items-center rounded-[14px] sm:rounded-[16px] border border-white/10 bg-white/5 text-white">
-          <Moon size={18} />
-        </button>
+        {/* Mobile Brand Small */}
+        <div className="sm:hidden flex items-center gap-2">
+           <div className="w-8 h-8 rounded-[12px] bg-gradient-to-br from-[#4ea1ff] to-[#ff6fb3] flex items-center justify-center text-white font-black text-xs">S</div>
+           <span className="font-extrabold text-white tracking-tighter">Sentiment</span>
+        </div>
+      </div>
 
-        <button className="profile-chip tactile flex items-center gap-2 border border-white/10 bg-white/5 text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-[14px] sm:rounded-[18px] font-bold">
-          <div className="avatar tiny w-7 h-7 sm:w-[30px] sm:h-[30px] rounded-[10px] sm:rounded-[12px] bg-gradient-to-br from-[#4ea1ff] to-[#ff6fb3] grid place-items-center text-[12px] sm:text-[14px]">
-            {user.user_metadata.username?.[0].toUpperCase()}
-          </div>
-          <span className="hidden sm:inline text-sm">{user.user_metadata.full_name.split(' ')[0]}</span>
+      <div className="topbar-actions flex items-center gap-2 sm:gap-4">
+        <button className="icon-btn-premium p-3 rounded-[16px] bg-white/[0.04] border border-[#ffffff14] text-slate-400 hover:text-white transition-all">
+          <Bell size={20} />
         </button>
+        
+        <div className="user-profile-lite flex items-center gap-3 p-1.5 pr-4 rounded-[20px] bg-white/[0.04] border border-[#ffffff14] hover:bg-white/[0.08] transition-all cursor-pointer">
+          <div className="avatar-small w-8 h-8 rounded-[12px] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white text-xs">
+            {user?.user_metadata.username?.[0].toUpperCase()}
+          </div>
+          <span className="hidden sm:inline font-bold text-[13px] text-[#e8eefc]">{user?.user_metadata.username}</span>
+        </div>
       </div>
     </header>
   );

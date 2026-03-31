@@ -103,7 +103,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="sidebar fixed left-0 top-0 bottom-0 w-[85vw] max-w-[320px] z-[70] border-r border-[#ffffff14] bg-[#0b1018] shadow-2xl lg:hidden"
+            className="sidebar fixed left-0 top-0 bottom-0 w-[85vw] max-w-[320px] z-[70] border-r border-[#ffffff14] bg-[#0f172a] shadow-[0_0_50px_rgba(0,0,0,0.8)] lg:hidden antialiased subpixel-antialiased"
           >
             {sidebarContent}
           </motion.aside>

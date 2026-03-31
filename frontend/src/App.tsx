@@ -54,7 +54,7 @@ function AppContent() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsMenuOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-[4px] z-[65] lg:hidden"
           />
         )}
       </AnimatePresence>

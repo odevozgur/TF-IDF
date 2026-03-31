@@ -128,7 +128,7 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
     if (error) return res.status(400).json({ error });
     if (data.length === 0) return res.json({ success: true, stats: null, comments: [] });
 
-    const stats = data.reduce((acc, curr) => ({
+    const stats = data.reduce((acc: any, curr: any) => ({
         positive: acc.positive + (curr.sentiment_positive || 0),
         neutral: acc.neutral + (curr.sentiment_neutral || 0),
         negative: acc.negative + (curr.sentiment_negative || 0),
@@ -147,7 +147,7 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
     });
 });
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req: Request, res: Response) => res.json({ status: 'ok' }));
 
 // Export for Vercel
 export default app;

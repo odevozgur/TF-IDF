@@ -3,6 +3,13 @@
   "private": true,
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
-    "install": "cd frontend && npm install"
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.101.1",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
   }
 }

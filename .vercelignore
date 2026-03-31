@@ -1,0 +1,9 @@
+# Folders to Omit from Vercel Deployment
+backend/
+nlp/data/
+nlp/venv/
+node_modules/
+.git/
+.vscode/
+frontend/node_modules/
+frontend/dist/

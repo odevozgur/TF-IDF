@@ -1,0 +1,2 @@
+scikit-learn
+# No nltk needed as preprocessing is inlined/custom

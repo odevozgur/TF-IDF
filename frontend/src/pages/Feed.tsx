@@ -20,7 +20,7 @@ interface Post {
   comments: Comment[];
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function Feed() {
   const { user } = useAuth();
@@ -33,7 +33,7 @@ export default function Feed() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/posts`);
+      const res = await axios.get(`${API_URL}/posts`);
       setPosts(res.data.data);
     } catch (err) {
       console.error('Fetch posts error:', err);
@@ -54,7 +54,7 @@ export default function Feed() {
     try {
       const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
       
-      await axios.post(`${API_URL}/api/posts`, 
+      await axios.post(`${API_URL}/posts`, 
         { content: newPost },
         { headers: { Authorization: `Bearer ${session?.access_token}` } }
       );
@@ -73,7 +73,7 @@ export default function Feed() {
 
     try {
       const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
-      await axios.post(`${API_URL}/api/comments`, 
+      await axios.post(`${API_URL}/comments`, 
         { post_id: postId, content: newComment },
         { headers: { Authorization: `Bearer ${session?.access_token}` } }
       );

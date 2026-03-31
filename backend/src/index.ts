@@ -49,9 +49,19 @@ const authenticateUser = async (req: any, res: Response, next: NextFunction) => 
 // NLP Bridge Helper
 const analyzeSentiment = (text: string): Promise<any> => {
     return new Promise((resolve, reject) => {
-        const pythonPath = path.join(__dirname, '../../nlp/venv/Scripts/python.exe');
-        const scriptPath = path.join(__dirname, '../../nlp/predict.py');
+        // Detect OS and set correct Python command/path
+        const isWindows = process.platform === 'win32';
+        
+        // On cloud servers (Linux), 'python3' is standard. 
+        // Locally on Windows, we use the venv path.
+        const pythonPath = isWindows 
+            ? path.resolve(__dirname, '../../nlp/venv/Scripts/python.exe')
+            : 'python3'; // On Render/Railway, we typically install dependencies in the system or a standard path
 
+        const scriptPath = path.resolve(__dirname, '../../nlp/predict.py');
+
+        console.log(`>>> Spawning Python: ${pythonPath} with script: ${scriptPath}`);
+        
         const pythonProcess = spawn(pythonPath, [scriptPath, '--text', text]);
 
         let result = '';

@@ -18,6 +18,8 @@ interface PostAnalysis {
   comments: any[]; // Analiz edilen tekil yorumlar
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function Profile() {
   const { user } = useAuth();
   const [analyses, setAnalyses] = useState<PostAnalysis[]>([]);
@@ -25,12 +27,12 @@ export default function Profile() {
 
   const fetchProfileData = async () => {
     try {
-      const postsRes = await axios.get('http://localhost:5000/api/posts');
+      const postsRes = await axios.get(`${API_URL}/api/posts`);
       const myPosts = postsRes.data.data.filter((p: any) => p.user_id === user?.id);
 
       const detailedAnalyses = await Promise.all(
         myPosts.map(async (post: any) => {
-          const analysisRes = await axios.get(`http://localhost:5000/api/posts/${post.id}/analysis`);
+          const analysisRes = await axios.get(`${API_URL}/api/posts/${post.id}/analysis`);
           return {
             ...post,
             stats: analysisRes.data.stats,

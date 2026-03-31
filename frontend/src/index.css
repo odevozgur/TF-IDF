@@ -1,12 +1,5 @@
 @import "tailwindcss";
-
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-weight: 400 800;
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/plusjakartasans/v8/L0xPDF6fd3_9S8L_aU70S_S-mEw-.woff2') format('woff2');
-}
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -145,16 +138,5 @@
       right: -60px;
       top: 60px;
     }
-  }
-
-  /* Nuclear Solid Sidebar Fix for Mobile */
-  .mobile-sidebar-solid {
-    background-color: #070a10 !important;
-    background-image: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-    box-shadow: 0 0 40px rgba(0,0,0,0.9) !important;
   }
 }

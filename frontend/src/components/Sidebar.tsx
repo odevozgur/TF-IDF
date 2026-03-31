@@ -103,7 +103,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="sidebar fixed left-0 top-0 bottom-0 w-[85vw] max-w-[320px] z-[9999] border-r border-[#ffffff14] mobile-sidebar-solid lg:hidden antialiased"
+            style={{ 
+              backgroundColor: '#070a10', 
+              opacity: 1, 
+              visibility: 'visible',
+              zIndex: 9999
+            }}
+            className="sidebar fixed left-0 top-0 bottom-0 w-[85vw] max-w-[320px] border-r border-[#ffffff14] lg:hidden antialiased shadow-[20px_0_60px_rgba(0,0,0,0.8)]"
           >
             {sidebarContent}
           </motion.aside>

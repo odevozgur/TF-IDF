@@ -88,9 +88,9 @@ export default function Feed() {
   };
 
   return (
-    <div className="feed-layout flex flex-col xl:flex-row gap-6 items-start">
+    <div className="feed-layout flex flex-col items-center justify-center w-full max-w-4xl mx-auto">
       {/* Main Feed Content */}
-      <section className="feed-main glass-panel h-fit w-full xl:max-w-none flex-1 p-4 sm:p-6 rounded-[28px] sm:rounded-[36px]">
+      <section className="feed-main glass-panel h-fit w-full max-w-2xl p-4 sm:p-6 rounded-[28px] sm:rounded-[36px]">
         <div className="feed-switch premium-surface flex mb-6 p-1.5 rounded-[18px] w-fit overflow-x-auto no-scrollbar">
           <button 
             onClick={() => setActiveTab('global')}
@@ -233,39 +233,6 @@ export default function Feed() {
           </AnimatePresence>
         </div>
       </section>
-
-      {/* Side Panels */}
-      <aside className="feed-side hidden xl:flex flex-col gap-6 w-[320px] sticky top-[110px]">
-        <section className="glass-panel side-panel p-6 rounded-[32px]">
-          <div className="side-head mb-4">
-            <span className="card-label">Akış</span>
-            <h3 className="mt-3 font-display text-[26px] tracking-[-0.06em] text-white">Alanlar</h3>
-          </div>
-          <div className="stack-list flex flex-col gap-3">
-            <button className="stack-item tactile flex justify-between items-center p-4.5 rounded-[20px] bg-white/[0.03] border border-white/5 text-white font-bold text-sm">
-              <span>Hakkımızda</span><em>›</em>
-            </button>
-            <button className="stack-item tactile flex justify-between items-center p-4.5 rounded-[20px] bg-white/[0.03] border border-white/5 text-white font-bold text-sm">
-              <span>Kurallar</span><em>›</em>
-            </button>
-          </div>
-        </section>
-
-        <section className="glass-panel side-panel trend-panel p-6 rounded-[32px]">
-          <div className="side-head mb-4">
-            <span className="card-label">Gündem</span>
-            <h3 className="mt-3 font-display text-[26px] tracking-[-0.06em] text-white">Trendler</h3>
-          </div>
-          <div className="trend-list flex flex-col gap-3">
-             {['#yazılım', '#analiz', '#ai', '#nlp'].map(tag => (
-               <div key={tag} className="trend-item p-4 rounded-[20px] bg-white/[0.03] border border-white/5 flex justify-between items-center">
-                 <strong className="text-xs text-white uppercase tracking-wider">{tag}</strong>
-                 <small className="text-[10px] text-slate-500 font-bold">2.1k</small>
-               </div>
-             ))}
-          </div>
-        </section>
-      </aside>
     </div>
   );
 }

@@ -1,6 +1,13 @@
 # TF-IDF Sentiment Analysis Projesi
 
-Bu proje, sosyal medya yorumlarının duygu analizini (Pozitif, Nötr, Negatif) TF-IDF ve Logistic Regression algoritmaları kullanarak gerçekleştiren tam kapsamlı bir web uygulamasıdır.
+Bu proje, sosyal medya yorumlarının duygu analizini (Pozitif, Nötr, Negatif) ve **Propaganda Tekniklerini** (Abartma, Korku Yayma, Çarpıtma, Kutuplaştırma, Hakaret, Otoriteye Dayandırma) TF-IDF ve Logistic Regression algoritmaları kullanarak gerçekleştiren tam kapsamlı bir web uygulamasıdır.
+
+## Özellikler
+
+- **Dual NLP Analizi:** Her yorum için hem duygu hem de propaganda türü tespiti.
+- **Detaylı İstatistikler:** Post bazında yüzdelik dilimlerle analiz raporları.
+- **Modern Dashboard:** Recharts ile görselleştirilmiş analiz verileri ve kullanıcı detayları.
+- **Genişletilmiş Veri Seti:** Propaganda türlerine göre optimize edilmiş 110.000+ satırlık veri seti.
 
 ## Proje Yapısı
 

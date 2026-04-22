@@ -17,34 +17,65 @@ def train_model():
 
     # Dataset yükle
     print("Loading dataset...")
-    df = pd.read_csv(DATA_PATH)
+    # on_bad_lines='skip' ensures we don't crash on slightly malformed CSV rows
+    df = pd.read_csv(DATA_PATH, on_bad_lines='skip', encoding='utf-8')
     
     # Ensure labels are clean
-    df = df.dropna(subset=['text', 'label'])
+    df = df.dropna(subset=['text', 'label', 'propaganda'])
     
+    # Strip whitespace from labels and convert to string
+    df['label'] = df['label'].astype(str).str.strip().str.lower()
+    df['propaganda'] = df['propaganda'].astype(str).str.strip().str.lower()
+    
+    # Propaganda label normalization
+    prop_map = {
+        'abartma': 'abartma',
+        'korku yayma': 'korku yayma',
+        'korku': 'korku yayma',
+        'çarpıtma': 'çarpıtma',
+        'kutuplaştırma': 'kutuplaştırma',
+        'hakaret': 'hakaret',
+        'otoriteye dayandırma': 'otoriteye dayandırma',
+        'otorite': 'otoriteye dayandırma'
+    }
+    
+    df['propaganda'] = df['propaganda'].apply(lambda x: prop_map.get(x, 'diğer'))
+    
+    # Remove rows where label is the header itself or 'diğer' (to keep it focused)
+    df = df[~df['label'].isin(['label', 'sentiment'])]
+    df = df[df['propaganda'] != 'diğer']
+
     texts = df["text"].astype(str)
-    labels = df["label"]
+    sentiment_labels = df["label"]
+    propaganda_labels = df["propaganda"]
 
     # Temizleme
     print("Preprocessing texts...")
-    texts = texts.apply(clean_text)
+    texts_cleaned = texts.apply(clean_text)
 
-    # TF-IDF
+    # TF-IDF Vectorizer
     print("Vectorizing...")
     vectorizer = TfidfVectorizer(max_features=10000, ngram_range=(1, 2))
-    X = vectorizer.fit_transform(texts)
+    X = vectorizer.fit_transform(texts_cleaned)
 
-    # Model - Logistic Regression with balanced class weights
-    print("Training model...")
-    model = LogisticRegression(max_iter=1000, class_weight='balanced')
-    model.fit(X, labels)
-
-    # Kaydet
-    pickle.dump(model, open(os.path.join(BASE_DIR, "model.pkl"), "wb"))
+    # Save Vectorizer (Shared between models)
     pickle.dump(vectorizer, open(os.path.join(BASE_DIR, "vectorizer.pkl"), "wb"))
 
-    print(f"Model and Vectorizer saved in {BASE_DIR}")
-    print(f"Classes: {model.classes_}")
+    # Model 1: Sentiment Analysis
+    print("Training Sentiment model...")
+    model_sentiment = LogisticRegression(max_iter=1000, class_weight='balanced')
+    model_sentiment.fit(X, sentiment_labels)
+    pickle.dump(model_sentiment, open(os.path.join(BASE_DIR, "model_sentiment.pkl"), "wb"))
+
+    # Model 2: Propaganda Analysis
+    print("Training Propaganda model...")
+    model_propaganda = LogisticRegression(max_iter=1000, class_weight='balanced')
+    model_propaganda.fit(X, propaganda_labels)
+    pickle.dump(model_propaganda, open(os.path.join(BASE_DIR, "model_propaganda.pkl"), "wb"))
+
+    print(f"Models and Vectorizer saved in {BASE_DIR}")
+    # print(f"Sentiment Classes: {model_sentiment.classes_}")
+    # print(f"Propaganda Classes: {model_propaganda.classes_}")
 
 if __name__ == "__main__":
     train_model()

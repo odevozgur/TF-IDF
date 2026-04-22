@@ -25,6 +25,13 @@ CREATE TABLE public.comments (
   sentiment_positive FLOAT DEFAULT 0,
   sentiment_neutral FLOAT DEFAULT 0,
   sentiment_negative FLOAT DEFAULT 0,
+  propaganda_prediction TEXT, -- abartma, korku yayma, etc.
+  propaganda_abartma FLOAT DEFAULT 0,
+  propaganda_korku FLOAT DEFAULT 0,
+  propaganda_carpitma FLOAT DEFAULT 0,
+  propaganda_kutuplastirma FLOAT DEFAULT 0,
+  propaganda_hakaret FLOAT DEFAULT 0,
+  propaganda_otorite FLOAT DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

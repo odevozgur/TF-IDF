@@ -47,16 +47,14 @@ const authenticateUser = async (req: any, res: Response, next: NextFunction) => 
 };
 
 // NLP Bridge Helper
-const analyzeSentiment = (text: string): Promise<any> => {
+const analyzeText = (text: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         // Detect OS and set correct Python command/path
         const isWindows = process.platform === 'win32';
         
-        // On cloud servers (Linux), 'python3' is standard. 
-        // Locally on Windows, we use the venv path.
         const pythonPath = isWindows 
             ? path.resolve(__dirname, '../../nlp/venv/Scripts/python.exe')
-            : 'python3'; // On Render/Railway, we typically install dependencies in the system or a standard path
+            : 'python3';
 
         const scriptPath = path.resolve(__dirname, '../../nlp/predict.py');
 
@@ -134,17 +132,24 @@ app.post('/api/comments', authenticateUser, async (req: any, res: Response) => {
     const { post_id, content } = req.body;
 
     try {
-        const sentiment = await analyzeSentiment(content);
+        const analysis = await analyzeText(content);
         const { data, error } = await req.supabase
             .from('comments')
             .insert([{
                 post_id,
                 user_id: req.user.id,
                 content,
-                sentiment_prediction: sentiment.prediction,
-                sentiment_positive: sentiment.positive,
-                sentiment_neutral: sentiment.neutral,
-                sentiment_negative: sentiment.negative
+                sentiment_prediction: analysis.sentiment.prediction,
+                sentiment_positive: analysis.sentiment.probabilities.positive,
+                sentiment_neutral: analysis.sentiment.probabilities.neutral,
+                sentiment_negative: analysis.sentiment.probabilities.negative,
+                propaganda_prediction: analysis.propaganda.prediction,
+                propaganda_abartma: analysis.propaganda.probabilities.abartma,
+                propaganda_korku: analysis.propaganda.probabilities['korku yayma'],
+                propaganda_carpitma: analysis.propaganda.probabilities['çarpıtma'],
+                propaganda_kutuplastirma: analysis.propaganda.probabilities['kutuplaştırma'],
+                propaganda_hakaret: analysis.propaganda.probabilities.hakaret,
+                propaganda_otorite: analysis.propaganda.probabilities['otoriteye dayandırma']
             }])
             .select();
 
@@ -164,12 +169,20 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
     const { data, error } = await supabase
         .from('comments')
         .select(`
-            content, 
+            content,
             sentiment_prediction, 
             sentiment_positive, 
             sentiment_neutral, 
             sentiment_negative,
-            created_at
+            propaganda_prediction,
+            propaganda_abartma,
+            propaganda_korku,
+            propaganda_carpitma,
+            propaganda_kutuplastirma,
+            propaganda_hakaret,
+            propaganda_otorite,
+            created_at,
+            profiles:user_id (username, avatar_url)
         `)
         .eq('post_id', id)
         .order('created_at', { ascending: false });
@@ -183,7 +196,18 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
         positive: acc.positive + curr.sentiment_positive,
         neutral: acc.neutral + curr.sentiment_neutral,
         negative: acc.negative + curr.sentiment_negative,
-    }), { positive: 0, neutral: 0, negative: 0 });
+        propaganda: {
+            abartma: acc.propaganda.abartma + (curr.propaganda_abartma || 0),
+            korku: acc.propaganda.korku + (curr.propaganda_korku || 0),
+            carpitma: acc.propaganda.carpitma + (curr.propaganda_carpitma || 0),
+            kutuplastirma: acc.propaganda.kutuplastirma + (curr.propaganda_kutuplastirma || 0),
+            hakaret: acc.propaganda.hakaret + (curr.propaganda_hakaret || 0),
+            otorite: acc.propaganda.otorite + (curr.propaganda_otorite || 0),
+        }
+    }), { 
+        positive: 0, neutral: 0, negative: 0, 
+        propaganda: { abartma: 0, korku: 0, carpitma: 0, kutuplastirma: 0, hakaret: 0, otorite: 0 } 
+    });
 
     const count = data.length;
     res.json({
@@ -192,6 +216,14 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
             positive: stats.positive / count,
             neutral: stats.neutral / count,
             negative: stats.negative / count,
+            propaganda: {
+                abartma: stats.propaganda.abartma / count,
+                korku: stats.propaganda.korku / count,
+                carpitma: stats.propaganda.carpitma / count,
+                kutuplastirma: stats.propaganda.kutuplastirma / count,
+                hakaret: stats.propaganda.hakaret / count,
+                otorite: stats.propaganda.otorite / count,
+            },
             total_comments: count
         },
         comments: data // Ham yorum verilerini de gönderiyoruz

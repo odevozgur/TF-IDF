@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Python
+**/__pycache__/
+*.pyc
+nlp/venv/
+*.pkl
+
+# Environment variables
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build files
+dist/
+build/
+.vercel/
+
+# Temporary files
+test_output.json

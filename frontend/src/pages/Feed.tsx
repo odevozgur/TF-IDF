@@ -20,7 +20,9 @@ interface Post {
   comments: Comment[];
 }
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = (import.meta.env.VITE_API_URL && !import.meta.env.VITE_API_URL.includes('localhost')) 
+  ? import.meta.env.VITE_API_URL 
+  : '/api'; // Fallback to relative path for better compatibility
 
 export default function Feed() {
   const { user } = useAuth();
@@ -91,44 +93,36 @@ export default function Feed() {
     <div className="feed-layout flex flex-col items-center w-full max-w-4xl mx-auto">
       {/* Main Feed Content */}
       <section className="feed-main glass-panel h-fit w-full max-w-2xl p-4 sm:p-6 rounded-[28px] sm:rounded-[36px] mb-8">
-        <div className="feed-switch premium-surface flex mb-6 p-1.5 rounded-[18px] w-fit overflow-x-auto no-scrollbar">
-          <button 
-            onClick={() => setActiveTab('global')}
-            className={`switch-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-[14px] font-extrabold transition-all text-sm whitespace-nowrap ${activeTab === 'global' ? 'active bg-white/10 text-white shadow-inner' : 'text-slate-400 hover:text-white'}`}
-          >
-            Global
-          </button>
-          <button 
-            onClick={() => setActiveTab('following')}
-            className={`switch-btn px-4 sm:px-5 py-2.5 sm:py-3 rounded-[14px] font-extrabold transition-all text-sm whitespace-nowrap ${activeTab === 'following' ? 'active bg-white/10 text-white shadow-inner' : 'text-slate-400 hover:text-white'}`}
-          >
-            Takip Edilenler
-          </button>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl sm:text-2xl font-display font-extrabold text-white">Akış</h2>
+          <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+            Canlı
+          </div>
         </div>
 
         {/* Post Creator */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="composer-inline premium-surface tactile flex items-center gap-3 p-3 sm:p-3.5 rounded-[20px] sm:rounded-[24px] mb-6 border border-white/10"
+          className="composer-inline premium-surface flex items-center gap-3 p-2.5 sm:p-3 rounded-[20px] sm:rounded-[24px] mb-8 border border-white/10 bg-white/[0.02]"
         >
-          <div className="avatar w-9 h-9 sm:w-10.5 sm:h-10.5 rounded-[12px] sm:rounded-[16px] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-extrabold text-sm sm:text-base text-white shrink-0">
+          <div className="avatar w-8 h-8 sm:w-10 sm:h-10 rounded-[14px] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-extrabold text-xs sm:text-sm text-white shrink-0 shadow-lg">
             {user?.user_metadata.username?.[0].toUpperCase()}
           </div>
           <input 
             type="text"
-            placeholder="Ne paylaşmak istersin?" 
+            placeholder="Neler oluyor?" 
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreatePost(e)}
-            className="flex-1 bg-transparent border-none outline-none text-white font-semibold placeholder:text-slate-500 text-sm sm:text-base"
+            className="flex-1 bg-transparent border-none outline-none text-white font-medium placeholder:text-slate-500 text-sm sm:text-base px-1"
           />
           <button 
             onClick={handleCreatePost}
             disabled={loading || !newPost.trim()}
-            className="composer-action bg-white/5 border border-white/10 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-[12px] sm:rounded-[14px] font-extrabold text-xs sm:text-sm hover:bg-white/10 transition-all disabled:opacity-50"
+            className="composer-action bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-[14px] font-extrabold text-xs sm:text-sm hover:bg-indigo-500 transition-all disabled:opacity-30 disabled:grayscale shadow-lg shadow-indigo-500/20"
           >
-            Paylaş
+            {loading ? '...' : 'Paylaş'}
           </button>
         </motion.div>
 

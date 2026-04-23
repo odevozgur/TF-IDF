@@ -3,12 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Home, Sparkles, User, Settings, Plus, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface SidebarProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-}
-
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+export default function Sidebar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,9 +15,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const menuItems = [
     { id: 'feed', label: 'Ana Sayfa', icon: <Home size={18} />, path: '/' },
-    { id: 'dashboard', label: 'Analizler', icon: <Sparkles size={18} />, path: '/profile' },
-    { id: 'profile', label: 'Profil', icon: <User size={18} />, path: '/profile' },
-    { id: 'settings', label: 'Ayarlar', icon: <Settings size={18} />, path: '#' },
+    { id: 'profile', label: 'Profil & Analiz', icon: <User size={18} />, path: '/profile' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -52,12 +45,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </button>
       </div>
 
-      <button 
-        onClick={() => { navigate('/'); if(onClose) onClose(); }}
-        className="create-btn tactile w-full py-[15px] px-[18px] rounded-[18px] font-extrabold text-[15px] mb-4 text-white bg-gradient-to-br from-[#8f72ff] to-[#4ea1ff] shadow-[0_14px_34px_rgba(78,161,255,0.18),inset_0_1px_0_rgba(255,255,255,0.16)] flex items-center justify-center gap-2"
-      >
-        <Plus size={20} /> Oluştur
-      </button>
+
 
       <nav className="menu flex flex-col gap-2.5">
         {menuItems.map((item) => (
@@ -89,32 +77,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   );
 
   return (
-    <>
-      {/* Desktop Sticky Sidebar */}
-      <aside className="sidebar h-screen sticky top-0 z-50 border-r border-[#ffffff14] bg-[#070a10cc] backdrop-blur-3xl hidden lg:flex shrink-0 w-[280px]">
-        {sidebarContent}
-      </aside>
-
-      {/* Mobile Drawer Sidebar */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.aside
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{ 
-              backgroundColor: '#070a10', 
-              opacity: 1, 
-              visibility: 'visible',
-              zIndex: 9999
-            }}
-            className="sidebar fixed left-0 top-0 bottom-0 w-[85vw] max-w-[320px] border-r border-[#ffffff14] lg:hidden antialiased shadow-[20px_0_60px_rgba(0,0,0,0.8)]"
-          >
-            {sidebarContent}
-          </motion.aside>
-        )}
-      </AnimatePresence>
-    </>
+    <aside className="sidebar h-screen sticky top-0 z-50 border-r border-[#ffffff14] bg-[#070a10cc] backdrop-blur-3xl hidden lg:flex shrink-0 w-[280px]">
+      {sidebarContent}
+    </aside>
   );
 }

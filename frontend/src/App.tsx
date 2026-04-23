@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
+import MobileNav from './components/MobileNav';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Feed from './pages/Feed';
@@ -31,13 +32,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function AppContent() {
   const { user } = useAuth();
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-
-  // Sayfa değiştiğinde menüyü kapat
+  // Sayfa değiştiğinde en üste kaydır
   React.useEffect(() => {
-    setIsMenuOpen(false);
+    window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   return (
     <div className="min-h-screen text-white relative bg-[#06080d]">
@@ -46,27 +46,16 @@ function AppContent() {
       <div className="bg-orb orb-2"></div>
       <div className="bg-grid"></div>
 
-      {/* Mobile Menu Backdrop */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsMenuOpen(false)}
-            className="fixed inset-0 bg-black/80 backdrop-blur-[4px] z-[65] lg:hidden"
-          />
-        )}
-      </AnimatePresence>
 
-      <div className={!isAuthPage && user ? "app-shell relative z-10 lg:grid lg:grid-cols-[280px_1fr] h-full" : "relative z-10 h-full"}>
+
+      <div className={!isAuthPage && user ? "app-shell relative z-10 lg:grid lg:grid-cols-[280px_1fr] min-h-screen" : "relative z-10 min-h-screen"}>
         {!isAuthPage && user && (
-          <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+          <Sidebar />
         )}
         
-        <main className={!isAuthPage && user ? "main min-w-0 p-4 sm:p-6 lg:p-8 lg:pt-5 pb-32 lg:pb-10 overflow-x-hidden" : ""}>
+        <main className={!isAuthPage && user ? "main min-w-0 p-4 sm:p-6 lg:p-8 lg:pt-5 pb-28 lg:pb-10 overflow-x-hidden" : "min-h-screen"}>
           {!isAuthPage && user && (
-            <Topbar onMenuToggle={() => setIsMenuOpen(!isMenuOpen)} />
+            <Topbar />
           )}
           
           <div className={!isAuthPage && user ? "max-w-7xl mx-auto w-full" : ""}>
@@ -90,6 +79,8 @@ function AppContent() {
           </div>
         </main>
       </div>
+
+      {!isAuthPage && user && <MobileNav />}
     </div>
   );
 }

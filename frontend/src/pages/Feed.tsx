@@ -20,9 +20,7 @@ interface Post {
   comments: Comment[];
 }
 
-const API_URL = (import.meta.env.VITE_API_URL && !import.meta.env.VITE_API_URL.includes('localhost')) 
-  ? import.meta.env.VITE_API_URL 
-  : '/api'; // Fallback to relative path for better compatibility
+const API_URL = import.meta.env.DEV ? (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') : '/api';
 
 export default function Feed() {
   const { user } = useAuth();

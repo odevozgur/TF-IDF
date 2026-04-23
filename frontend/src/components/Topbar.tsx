@@ -1,4 +1,4 @@
-import { Search, Bell, Menu } from 'lucide-react';
+
 import { useAuth } from '../context/AuthContext';
 
 export default function Topbar() {

@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, Sparkles, User, Settings, Plus, LogOut } from 'lucide-react';
+import { Home, User, LogOut } from 'lucide-react';
 
 export default function MobileNav() {
   const { user, signOut } = useAuth();

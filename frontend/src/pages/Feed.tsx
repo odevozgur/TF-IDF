@@ -29,7 +29,7 @@ export default function Feed() {
   const [commentingOn, setCommentingOn] = useState<string | null>(null);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'global' | 'following'>('global');
+
 
   const fetchPosts = async () => {
     try {

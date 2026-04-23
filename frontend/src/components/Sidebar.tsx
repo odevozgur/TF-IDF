@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, Sparkles, User, Settings, Plus, LogOut, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Home, User, LogOut } from 'lucide-react';
 
 export default function Sidebar() {
   const { user, signOut } = useAuth();
@@ -36,13 +35,7 @@ export default function Sidebar() {
           </div>
         </div>
         
-        {/* Mobile Close Button */}
-        <button 
-          onClick={onClose}
-          className="lg:hidden p-2 text-slate-400 hover:text-white"
-        >
-          <X size={24} />
-        </button>
+
       </div>
 
 
@@ -51,7 +44,7 @@ export default function Sidebar() {
         {menuItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => { navigate(item.path); if(onClose) onClose(); }}
+            onClick={() => { navigate(item.path); }}
             className={`menu-item tactile flex items-center gap-3 px-4 py-[14px] rounded-[18px] border border-transparent font-bold text-[14px] transition-all text-left ${
               isActive(item.path) 
                 ? 'bg-gradient-to-b from-[rgba(255,255,255,0.065)] to-[rgba(255,255,255,0.03)] border-[#ffffff14] text-white' 

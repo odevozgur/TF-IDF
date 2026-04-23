@@ -1,55 +1,63 @@
-# TF-IDF Sentiment Analysis Projesi
+# NLP Sentiment & Propaganda Analysis System
 
-Bu proje, sosyal medya yorumlarının duygu analizini (Pozitif, Nötr, Negatif) ve **Propaganda Tekniklerini** (Abartma, Korku Yayma, Çarpıtma, Kutuplaştırma, Hakaret, Otoriteye Dayandırma) TF-IDF ve Logistic Regression algoritmaları kullanarak gerçekleştiren tam kapsamlı bir web uygulamasıdır.
+Bu proje, sosyal medya verileri üzerinde derinlemesine **Duygu Analizi** ve **Propaganda Teknikleri Tespiti** gerçekleştiren, makine öğrenmesi destekli tam kapsamlı bir web uygulamasıdır. Proje, güncel 20MB'lık genişletilmiş veri seti ile eğitilmiş modellerle en son haline getirilmiştir.
 
-## Özellikler
+## 🚀 Proje Durumu ve Analizler
 
-- **Dual NLP Analizi:** Her yorum için hem duygu hem de propaganda türü tespiti.
-- **Detaylı İstatistikler:** Post bazında yüzdelik dilimlerle analiz raporları.
-- **Modern Dashboard:** Recharts ile görselleştirilmiş analiz verileri ve kullanıcı detayları.
-- **Genişletilmiş Veri Seti:** Propaganda türlerine göre optimize edilmiş 110.000+ satırlık veri seti.
+Uygulama, metin tabanlı verileri analiz ederek iki temel katmanda sonuç üretir:
 
-## Proje Yapısı
+1.  **Duygu Analizi (Sentiment Analysis):** Metnin genel tonunu (Pozitif, Nötr, Negatif) belirler. Sosyal medya etkileşimlerinin genel havasını anlamak için kullanılır.
+2.  **Propaganda Analizi:** Metin içerisindeki manipülasyon ve propaganda tekniklerini tespit eder. Tespit edilen kategoriler:
+    -   **Otoriteye Dayandırma:** Güç figürlerini kullanarak argümanı güçlendirme.
+    -   **Kutuplaştırma:** "Biz ve Onlar" ayrımı yaratarak toplumu bölme.
+    -   **Korku Yayma:** Tehdit ve korku unsurlarıyla manipülasyon.
+    -   **Hakaret:** Karşı tarafı küçümseyerek değersizleştirme.
+    -   **Abartma:** Gerçeği olduğundan çok daha büyük gösterme.
+    -   **Çarpıtma:** Bilgileri bağlamından kopararak yanlış sunma.
 
-Proje üç ana bölümden oluşmaktadır:
+## 🧠 Neden TF-IDF Kullandık?
 
-1.  **NLP Core (Python):** TF-IDF vektörleştirme ve Makine Öğrenmesi modelini içeren çekirdek.
-2.  **Backend (Node.js + TypeScript):** NLP çekirdeği ile haberleşen ve API hizmeti sağlayan sunucu.
-3.  **Frontend (React + Vite):** Modern, premium tasarıma sahip kullanıcı arayüzü ve analiz dashboard'u.
+**TF-IDF (Term Frequency-Inverse Document Frequency)**, metin madenciliğinde kelimelerin metin içindeki önemini matematiksel olarak hesaplayan bir istatistiksel yöntemdir.
 
----
+-   **Term Frequency (TF):** Bir kelimenin metinde ne kadar sık geçtiğini ölçer.
+-   **Inverse Document Frequency (IDF):** Bir kelimenin tüm veri setinde ne kadar nadir (ve dolayısıyla ne kadar ayırt edici) olduğunu ölçer.
 
-## Nasıl Çalıştırılır?
+**Neden Seçtik?**
+Bu projede TF-IDF kullanarak, "ve", "bir", "bu" gibi her cümlede geçen anlamsız kelimelerin ağırlığını düşürdük; "saldırı", "güvenli", "yalan" gibi duygu ve propaganda belirten anahtar kelimelerin ağırlığını artırdık. Bu sayede modellerimiz (Logistic Regression), metnin sadece yüzeysel kelime sayısına değil, **semantik ağırlığına** bakarak karar verebilir hale geldi.
 
-Projenin çalışması için hem backend hem de frontend sunucularının aynı anda açık olması gerekmektedir.
+## 🛠 Kurulum ve Çalıştırma (Pipeline)
 
-### 1. Backend Sunucusunu Başlatma
-Yeni bir terminal açın ve şu komutları sırasıyla çalıştırın:
+Proje, indirildiği anda çalışabilecek şekilde (Portable) tasarlanmıştır. Tüm modeller ve `.env` dosyaları repo içerisine dahil edilmiştir.
+
+### 1. Backend Hazırlığı
 ```powershell
 cd backend
+npm install
 npm run dev
 ```
-*Backend şu adreste çalışacaktır: `http://localhost:5000`*
+*Backend `http://localhost:5000` adresinde ayağa kalkacaktır.*
 
-### 2. Frontend Sunucusunu Başlatma
-Başka bir terminal açın ve şu komutları sırasıyla çalıştırın:
+### 2. Frontend Hazırlığı
 ```powershell
 cd frontend
+npm install
 npm run dev
 ```
-*Frontend şu adreste çalışacaktır: `http://localhost:5173` (veya terminalde belirtilen adres)*
+*Frontend `http://localhost:5173` adresinde açılacaktır.*
+
+### 3. NLP Modelleri
+Modeller `nlp/` klasöründe hazır durumdadır. Python ortamınızda `pandas` ve `scikit-learn` yüklü olması yeterlidir. İlk çalıştırmada `nlp/train_model.ps1` scriptini çalıştırarak ortamı doğrulayabilirsiniz.
 
 ---
 
-## Proje Gelişim Günlüğü (Progress Log)
+## 🔐 Test Giriş Bilgileri
 
-- [x] **Adım 1:** Proje yapısı oluşturuldu.
-- [x] **Adım 2:** Python tabanlı NLP modeli (TF-IDF + Logistic Regression) olasılık çıktıları verecek şekilde güncellendi.
-- [x] **Adım 3:** Node.js (TypeScript) Backend kuruldu ve NLP köprüsü (child_process) tamamlandı.
-- [x] **Adım 4:** React (Vite) Frontend eklendi. Premium UI, Framer Motion animasyonları ve Recharts grafikleri uygulandı.
-- [x] **Adım 5:** Uçtan uca testler yapıldı ve sistem optimize edildi.
+Projeyi hızlıca test etmek ve analizleri görmek için aşağıdaki hesabı kullanabilirsiniz:
 
-## Teknolojiler
-- **NLP:** Python, Scikit-learn, Pandas, Pickle
-- **Backend:** Node.js, TypeScript, Express, Child Process
-- **Frontend:** React, Vite, Tailwind CSS 4, Framer Motion, Lucide Icons, Recharts, Axios
+-   **E-posta:** `yasinyumrutas0@gmail.com`
+-   **Şifre:** `Y321654e.`
+
+---
+
+## 👨‍💻 Geliştirici Notu
+Proje, yüksek performanslı **Logistic Regression** modelleri ve modern **React + Framer Motion** arayüzü ile premium bir kullanıcı deneyimi sunar. 20MB'lık veri seti ile modellerin isabet oranı (accuracy) maksimum seviyeye çıkarılmıştır.

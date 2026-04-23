@@ -76,20 +76,29 @@ app.post('/api/posts', authenticateUser, async (req: any, res: Response) => {
 });
 
 app.get('/api/posts', async (req: any, res: Response) => {
-    const { data, error } = await supabase
-        .from('posts')
-        .select(`
-            *,
-            profiles:user_id (username, full_name, avatar_url),
-            comments (
-                id, content, sentiment_prediction, created_at,
-                profiles:user_id (username, avatar_url)
-            )
-        `)
-        .order('created_at', { ascending: false });
+    try {
+        console.log(">>> Fetching posts from Supabase...");
+        const { data, error } = await supabase
+            .from('posts')
+            .select(`
+                *,
+                profiles:user_id (username, full_name, avatar_url),
+                comments (
+                    id, content, sentiment_prediction, created_at,
+                    profiles:user_id (username, avatar_url)
+                )
+            `)
+            .order('created_at', { ascending: false });
 
-    if (error) return res.status(400).json({ error });
-    res.json({ success: true, data });
+        if (error) {
+            console.error("Supabase Error:", error);
+            return res.status(400).json({ error: error.message });
+        }
+        res.json({ success: true, data });
+    } catch (err: any) {
+        console.error("Server Error [GET /api/posts]:", err);
+        res.status(500).json({ error: 'Internal Server Error', message: err.message });
+    }
 });
 
 app.post('/api/comments', authenticateUser, async (req: any, res: Response) => {

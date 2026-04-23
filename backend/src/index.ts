@@ -69,9 +69,20 @@ const analyzeText = (text: string): Promise<any> => {
         // Detect OS and set correct Python command/path
         const isWindows = process.platform === 'win32';
         
-        const pythonPath = isWindows 
+        // Portable Python Path Logic
+        const venvPythonPath = isWindows 
             ? path.resolve(__dirname, '../../nlp/venv/Scripts/python.exe')
-            : 'python3';
+            : path.resolve(__dirname, '../../nlp/venv/bin/python');
+
+        const fs = require('fs');
+        let pythonPath = 'python'; // Default fallback
+
+        if (fs.existsSync(venvPythonPath)) {
+            pythonPath = venvPythonPath;
+        } else {
+            console.warn(`>>> Warning: Virtual environment not found at ${venvPythonPath}. Falling back to global 'python' or 'py'.`);
+            pythonPath = isWindows ? 'py' : 'python3';
+        }
 
         const scriptPath = path.resolve(__dirname, '../../nlp/predict.py');
 
@@ -90,8 +101,15 @@ const analyzeText = (text: string): Promise<any> => {
             error += data.toString();
         });
 
+        // Handle spawn errors (like missing executable)
+        pythonProcess.on('error', (err) => {
+            console.error('>>> Python Spawn Error:', err.message);
+            reject(new Error(`Failed to start Python process: ${err.message}. Please ensure Python is installed and added to PATH.`));
+        });
+
         pythonProcess.on('close', (code) => {
             if (code !== 0) {
+                console.error(`>>> Python Process Error (Code ${code}):`, error);
                 reject(new Error(`Python process exited with code ${code}: ${error}`));
                 return;
             }
@@ -99,7 +117,8 @@ const analyzeText = (text: string): Promise<any> => {
                 const jsonResult = JSON.parse(result.trim());
                 resolve(jsonResult);
             } catch (e) {
-                reject(new Error(`Failed to parse Python output: ${result}`));
+                console.error('>>> JSON Parse Error from Python output:', result);
+                reject(new Error(`Failed to parse Python output. Raw output: ${result}`));
             }
         });
     });

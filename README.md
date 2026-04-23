@@ -45,10 +45,30 @@ npm run dev
 ```
 *Frontend `http://localhost:5173` adresinde açılacaktır.*
 
-### 3. NLP Modelleri
-Modeller `nlp/` klasöründe hazır durumdadır. Python ortamınızda `pandas` ve `scikit-learn` yüklü olması yeterlidir. İlk çalıştırmada `nlp/train_model.ps1` scriptini çalıştırarak ortamı doğrulayabilirsiniz.
+### 3. NLP Modelleri ve Ortam Hazırlığı
+Modeller `nlp/` klasöründe hazır durumdadır. Projenin sağlıklı çalışması için Python bağımlılıklarının yüklü olması gerekir.
+
+**Önerilen (Virtual Environment):**
+```powershell
+cd nlp
+python -m venv venv
+.\venv\Scripts\activate  # Windows için
+pip install pandas scikit-learn
+```
+
+**Not:** Eğer `venv` oluşturmazsanız, sistem otomatik olarak bilgisayarınızdaki global `python` veya `py` komutunu deneyecektir. Ancak hataları önlemek için yukarıdaki adımlarla `venv` oluşturmanız tavsiye edilir.
 
 ---
+
+## 🛠 Sorun Giderme (Troubleshooting)
+
+### 1. "spawn ... ENOENT" Hatası
+Bu hata, sistemin Python çalıştırıcısını bulamadığını gösterir.
+- **Çözüm:** Python'un bilgisayarınızda yüklü ve PATH'e ekli olduğundan emin olun. `nlp` klasöründe `venv` oluşturmak bu sorunu kesin olarak çözer.
+
+### 2. "Network Error" veya CORS Hatası
+Frontend backend'e ulaşamadığında bu hatayı alırsınız.
+- **Çözüm:** Backend'in (Node.js) `npm run dev` ile çalıştığından ve 5000 portunu kullandığından emin olun. Backend kapalıyken frontend analiz yapamaz.
 
 ## 🔐 Test Giriş Bilgileri
 

@@ -1,6 +1,6 @@
 # NLP Sentiment & Propaganda Analysis System
 
-Bu proje, sosyal medya verileri üzerinde derinlemesine **Duygu Analizi** ve **Propaganda Teknikleri Tespiti** gerçekleştiren, makine öğrenmesi destekli tam kapsamlı bir web uygulamasıdır. Proje, güncel 20MB'lık genişletilmiş veri seti ile eğitilmiş modellerle en son haline getirilmiştir.
+Bu proje, sosyal medya verileri üzerinde derinlemesine **Duygu Analizi** ve **Propaganda Teknikleri Tespiti** gerçekleştiren, makine öğrenmesi destekli bir web uygulamasıdır. Proje, güncel 20MB'lık genişletilmiş veri seti ile eğitilmiş modellerle en son haline getirilmiştir.
 
 ## 🚀 Proje Durumu ve Analizler
 

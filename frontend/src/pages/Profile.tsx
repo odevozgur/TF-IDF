@@ -20,6 +20,7 @@ interface PostAnalysis {
       kutuplastirma: number;
       hakaret: number;
       otorite: number;
+      yok: number;
     };
     total_comments: number;
   } | null;
@@ -62,7 +63,7 @@ export default function Profile() {
   }, [user]);
 
   const COLORS = ['#22c55e', '#94a3b8', '#ef4444']; // Positive, Neutral, Negative
-  const PROPAGANDA_COLORS = ['#fbbf24', '#f87171', '#818cf8', '#34d399', '#f472b6', '#a78bfa']; // Colors for different types
+  const PROPAGANDA_COLORS = ['#fbbf24', '#f87171', '#818cf8', '#34d399', '#f472b6', '#a78bfa', '#64748b']; // Colors for different types
 
   if (loading) return <div className="flex justify-center py-20 text-slate-400">Yükleniyor...</div>;
   return (
@@ -175,6 +176,7 @@ export default function Profile() {
                                 { name: `Kutuplaştırma %${Math.round(post.stats.propaganda.kutuplastirma * 100)}`, value: post.stats.propaganda.kutuplastirma },
                                 { name: `Hakaret %${Math.round(post.stats.propaganda.hakaret * 100)}`, value: post.stats.propaganda.hakaret },
                                 { name: `Otorite %${Math.round(post.stats.propaganda.otorite * 100)}`, value: post.stats.propaganda.otorite },
+                                { name: `Yok %${Math.round((post.stats.propaganda.yok || 0) * 100)}`, value: post.stats.propaganda.yok || 0 },
                               ]}
                               cx="50%" cy="50%"
                               innerRadius={40} outerRadius={60}
@@ -221,7 +223,7 @@ export default function Profile() {
                                 }`}>
                                   {comment.sentiment_prediction}
                                 </div>
-                                {comment.propaganda_prediction && (
+                                {comment.propaganda_prediction && comment.propaganda_prediction !== 'yok' && (
                                   <div className="text-[7px] font-extrabold px-1.5 py-0.5 bg-indigo-500/20 text-indigo-300 rounded-md border border-indigo-500/30 uppercase">
                                     {comment.propaganda_prediction}
                                   </div>

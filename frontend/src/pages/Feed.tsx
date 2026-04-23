@@ -52,11 +52,17 @@ export default function Feed() {
     setLoading(true);
 
     try {
-      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await (await import('../supabaseClient')).supabase.auth.getSession();
       
+      if (sessionError || !session) {
+        console.error('Session error or missing:', sessionError);
+        alert('Oturumunuz sona ermiş olabilir. Lütfen tekrar giriş yapın.');
+        return;
+      }
+
       await axios.post(`${API_URL}/posts`, 
         { content: newPost },
-        { headers: { Authorization: `Bearer ${session?.access_token}` } }
+        { headers: { Authorization: `Bearer ${session.access_token}` } }
       );
       setNewPost('');
       fetchPosts();
@@ -72,10 +78,17 @@ export default function Feed() {
     setLoading(true);
 
     try {
-      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error('Session error or missing:', sessionError);
+        alert('Oturumunuz sona ermiş olabilir. Lütfen tekrar giriş yapın.');
+        return;
+      }
+
       await axios.post(`${API_URL}/comments`, 
         { post_id: postId, content: newComment },
-        { headers: { Authorization: `Bearer ${session?.access_token}` } }
+        { headers: { Authorization: `Bearer ${session.access_token}` } }
       );
       setNewComment('');
       setCommentingOn(null);

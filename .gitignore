@@ -5,11 +5,10 @@ node_modules/
 **/__pycache__/
 *.pyc
 nlp/venv/
-*.pkl
 
-# Environment variables
-.env
-.env.local
+# Environment variables (Allowed for portable deployment)
+# .env
+# .env.local
 
 # IDEs
 .vscode/

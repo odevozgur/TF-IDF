@@ -13,20 +13,37 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
+const PROPAGANDA_LABELS: Record<string, string> = {
+    abartma: 'Abartma',
+    korku: 'Korku Yayma',
+    carpitma: 'Çarpıtma',
+    kutuplastirma: 'Kutuplaştırma',
+    hakaret: 'Hakaret',
+    otorite: 'Otoriteye Dayandırma',
+    yok: 'yok'
+};
 
 // Auth Middleware + Scoped Supabase Client
 const authenticateUser = async (req: any, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!token) {
+        console.warn('>>> Auth Error: No token provided');
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-    // Kullanıcının kendi token'ı ile özel bir Supabase istemcisi oluştur
+    // Token doğrula
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error || !user) {
+        console.error('>>> Auth Error:', error?.message || 'Invalid token');
+        return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    // RLS için kullanıcıya özel istemci (opsiyonel ama daha güvenli)
     const { createClient } = require('@supabase/supabase-js');
     const userSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
         global: { headers: { Authorization: `Bearer ${token}` } }
     });
-
-    const { data: { user }, error } = await userSupabase.auth.getUser();
-    if (error || !user) return res.status(401).json({ error: 'Invalid token' });
 
     // Profil kontrolü ve gerekirse oluşturma (Kullanıcı yetkisiyle)
     const { data: profile } = await userSupabase.from('profiles').select('id').eq('id', user.id).single();
@@ -143,13 +160,13 @@ app.post('/api/comments', authenticateUser, async (req: any, res: Response) => {
                 sentiment_positive: analysis.sentiment.probabilities.positive,
                 sentiment_neutral: analysis.sentiment.probabilities.neutral,
                 sentiment_negative: analysis.sentiment.probabilities.negative,
-                propaganda_prediction: analysis.propaganda.prediction,
+                propaganda_prediction: PROPAGANDA_LABELS[analysis.propaganda.prediction] || analysis.propaganda.prediction,
                 propaganda_abartma: analysis.propaganda.probabilities.abartma,
-                propaganda_korku: analysis.propaganda.probabilities['korku yayma'],
-                propaganda_carpitma: analysis.propaganda.probabilities['çarpıtma'],
-                propaganda_kutuplastirma: analysis.propaganda.probabilities['kutuplaştırma'],
+                propaganda_korku: analysis.propaganda.probabilities.korku,
+                propaganda_carpitma: analysis.propaganda.probabilities.carpitma,
+                propaganda_kutuplastirma: analysis.propaganda.probabilities.kutuplastirma,
                 propaganda_hakaret: analysis.propaganda.probabilities.hakaret,
-                propaganda_otorite: analysis.propaganda.probabilities['otoriteye dayandırma']
+                propaganda_otorite: analysis.propaganda.probabilities.otorite
             }])
             .select();
 
@@ -223,6 +240,7 @@ app.get('/api/posts/:id/analysis', async (req: Request, res: Response) => {
                 kutuplastirma: stats.propaganda.kutuplastirma / count,
                 hakaret: stats.propaganda.hakaret / count,
                 otorite: stats.propaganda.otorite / count,
+                yok: 1 - ((stats.propaganda.abartma + stats.propaganda.korku + stats.propaganda.carpitma + stats.propaganda.kutuplastirma + stats.propaganda.hakaret + stats.propaganda.otorite) / count)
             },
             total_comments: count
         },

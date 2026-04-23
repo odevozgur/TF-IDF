@@ -27,23 +27,23 @@ def train_model():
     df['label'] = df['label'].astype(str).str.strip().str.lower()
     df['propaganda'] = df['propaganda'].astype(str).str.strip().str.lower()
     
-    # Propaganda label normalization
+    # Propaganda label normalization (Using ASCII keys to avoid encoding issues)
     prop_map = {
         'abartma': 'abartma',
-        'korku yayma': 'korku yayma',
-        'korku': 'korku yayma',
-        'çarpıtma': 'çarpıtma',
-        'kutuplaştırma': 'kutuplaştırma',
+        'korku yayma': 'korku',
+        'korku': 'korku',
+        'çarpıtma': 'carpitma',
+        'kutuplaştırma': 'kutuplastirma',
         'hakaret': 'hakaret',
-        'otoriteye dayandırma': 'otoriteye dayandırma',
-        'otorite': 'otoriteye dayandırma'
+        'otoriteye dayandırma': 'otorite',
+        'otorite': 'otorite',
+        'yok': 'yok'
     }
     
-    df['propaganda'] = df['propaganda'].apply(lambda x: prop_map.get(x, 'diğer'))
+    df['propaganda'] = df['propaganda'].apply(lambda x: prop_map.get(x, 'yok')) # Default to 'yok'
     
-    # Remove rows where label is the header itself or 'diğer' (to keep it focused)
-    df = df[~df['label'].isin(['label', 'sentiment'])]
-    df = df[df['propaganda'] != 'diğer']
+    # Remove rows where label is the header itself
+    df = df[~df['label'].isin(['label', 'sentiment', 'propaganda'])]
 
     texts = df["text"].astype(str)
     sentiment_labels = df["label"]
@@ -55,7 +55,7 @@ def train_model():
 
     # TF-IDF Vectorizer
     print("Vectorizing...")
-    vectorizer = TfidfVectorizer(max_features=10000, ngram_range=(1, 2))
+    vectorizer = TfidfVectorizer(max_features=20000, ngram_range=(1, 3))
     X = vectorizer.fit_transform(texts_cleaned)
 
     # Save Vectorizer (Shared between models)
